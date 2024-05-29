@@ -8,7 +8,7 @@ exports.selectArticleById = (article_id) => {
         if(!rows.length){
             return Promise.reject()
         };
-        return rows[0]
+        return rows[0];
     });
 };
 
@@ -22,5 +22,18 @@ exports.selectArticles = () => {
     ORDER BY articles.created_at DESC;`
     return db.query(queryStr).then(({ rows }) => {
         return rows
+    });
+};
+
+exports.selectArticleComments = (article_id) => {
+    let queryStr = `SELECT * FROM comments WHERE article_id = $1
+                        ORDER BY created_at DESC`
+    return db
+    .query(queryStr, [article_id])
+    .then(({ rows }) => {
+        if(!rows.length){
+            return Promise.reject()
+        };
+        return rows;
     });
 };

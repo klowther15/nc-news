@@ -67,7 +67,7 @@ describe('GET: api/articles/:article_id', () => {
 });
 
 describe('GET: api/articles', () => {
-    test('200: responds successfully with a list of all articles with a comment_count property', () => {
+    test('200: responds successfully with a list of all articles with a comment_count property and order sorted by date in descending order', () => {
         return request(app)
         .get('/api/articles')
         .expect(200)
@@ -88,6 +88,37 @@ describe('GET: api/articles', () => {
                 expect(article).toHaveProperty("comment_count")
                 expect(article).not.toHaveProperty("body");
             });
+        });
+    });
+});
+
+describe('GET/api/articles/:article_id/comments', () => {
+    test('200: responds successfully with an array of all comments for the given article id, in date descending order', () => {
+        return request(app)
+        .get('/api/articles/5/comments')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body).toHaveLength(2)
+            expect(body).toBeSortedBy("created_at", {
+                descending: true,
+                coerce: true,
+        });
+            body.forEach((comment) => {
+                expect(comment).toHaveProperty("comment_id")
+                expect(comment).toHaveProperty("votes")
+                expect(comment).toHaveProperty("created_at")
+                expect(comment).toHaveProperty("author")
+                expect(comment).toHaveProperty("body")
+                expect(comment).toHaveProperty("article_id")
+            });
+        });
+    });
+    test('400: responds with appropriate error message when given an invalid article_id', () => {
+        return request(app)
+        .get('/api/articles/invalidId/comments')
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request")
         });
     });
 });
