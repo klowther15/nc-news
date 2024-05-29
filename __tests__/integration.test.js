@@ -66,6 +66,32 @@ describe('GET: api/articles/:article_id', () => {
     });
 });
 
+describe('GET: api/articles', () => {
+    test('200: responds successfully with a list of all articles with a comment_count property', () => {
+        return request(app)
+        .get('/api/articles')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body).toBeSortedBy("created_at", {
+                descending: true,
+                coerce: true,
+        });
+            expect(body).toHaveLength(13);
+            body.forEach((article) => {
+                expect(article).toHaveProperty("author");
+                expect(article).toHaveProperty("title");
+                expect(article).toHaveProperty("article_id");
+                expect(article).toHaveProperty("topic");
+                expect(article).toHaveProperty("created_at");
+                expect(article).toHaveProperty("votes");
+                expect(article).toHaveProperty("article_img_url");
+                expect(article).toHaveProperty("comment_count")
+                expect(article).not.toHaveProperty("body");
+            });
+        });
+    });
+});
+
 //  404 testing //
 describe('404: reponds to any unfound path', () => {
     test('404: responds with appropriate error message when path not found', () => {
