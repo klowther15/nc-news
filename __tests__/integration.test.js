@@ -40,6 +40,31 @@ describe('GET: /api', () => {
     });
 });
 
+describe('GET: api/articles/:article_id', () => {
+    test('200: responds with a single article by id', () => {
+        return request(app)
+        .get('/api/articles/3')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body).toHaveProperty("author")
+            expect(body).toHaveProperty("title")
+            expect(body).toHaveProperty("article_id")
+            expect(body).toHaveProperty("body")
+            expect(body).toHaveProperty("topic")
+            expect(body).toHaveProperty("created_at")
+            expect(body).toHaveProperty("votes")
+            expect(body).toHaveProperty("article_img_url")
+        });
+    });
+    test('400: responds with appropriate error message when given an invalid article_id', () => {
+        return request(app)
+        .get('/api/articles/invalidId')
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request")
+        });
+    });
+});
 
 //  404 testing //
 describe('404: reponds to any unfound path', () => {
@@ -57,6 +82,14 @@ describe('404: reponds to any unfound path', () => {
         .expect(404)
         .then(({ body }) => {
             expect(body.msg).toBe('Route not found')
-        })
-    })
+        });
+    });
+    test('404: responds with appropriate error message when article_id does not exist', () =>{
+        return request(app)
+        .get('/api/articles/99999')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Route not found')
+        });
+    });
 });
