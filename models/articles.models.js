@@ -13,9 +13,7 @@ exports.selectArticleById = (article_id) => {
 };
 
 exports.selectArticles = () => {
-    //LEFT join COMMENTS on articles id
-    //GROUP BY article id
-
+  
     let queryStr = `SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url,
     COUNT(comments.comment_id) AS comment_count 
     FROM articles 
