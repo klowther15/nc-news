@@ -1,4 +1,4 @@
-const { selectArticleById , selectArticles , selectArticleComments } = require('../models/articles.models')
+const { selectArticleById , selectArticles , selectArticleComments , insertArticleComment } = require('../models/articles.models')
 
 exports.getArticleById = (req, res, next) => {
     const { article_id } = req.params;
@@ -19,7 +19,7 @@ exports.getArticles = (req, res, next) => {
     .catch((err) => {
         next(err)
     });
-}
+};
 
 exports.getArticleComments = (req, res, next) => {
     const { article_id } = req.params
@@ -30,4 +30,15 @@ exports.getArticleComments = (req, res, next) => {
     .catch((err) => {
         next(err)
     });
+};
+
+exports.postArticleComments = (req, res, next) => {
+    const { article_id } = req.params
+    return insertArticleComment(article_id, req.body)
+    .then((comment) => {
+        res.status(201).send(comment)
+    })
+.catch((err) => {
+    next(err)
+});
 };
