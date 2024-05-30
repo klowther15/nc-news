@@ -109,8 +109,8 @@ describe('GET/api/articles/:article_id/comments', () => {
                 expect(comment).toHaveProperty("created_at")
                 expect(comment).toHaveProperty("author")
                 expect(comment).toHaveProperty("body")
-                expect(comment).toHaveProperty("article_id")
-            });
+                expect(comment).toHaveProperty("article_id") //exact id
+            });// add test 200 for empty array when no comments
         });
     });
     test('400: responds with appropriate error message when given an invalid article_id', () => {
@@ -151,6 +151,78 @@ describe('POST/api/articles/:article_id/comments', () => {
             expect(body.msg).toBe("Bad Request")
         });
     });
+});
+
+describe('PATCH: api/articles/:article_id', () => {
+    test('200: identifies article id and adds to an articles votes value when given integer', () => {
+        const articleVotes = {
+            inc_votes: 8
+        };
+        return request(app)
+        .patch('/api/articles/3')
+        .send(articleVotes)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body.votes).toBe(8)
+            expect(body).toHaveProperty("author");
+            expect(body).toHaveProperty("title");
+            expect(body).toHaveProperty("article_id");
+            expect(body).toHaveProperty("topic");
+            expect(body).toHaveProperty("created_at");
+            expect(body).toHaveProperty("votes");
+            expect(body).toHaveProperty("article_img_url");
+        });
+    });
+    test('200: identifies article id and subtracts from an articles votes value when given a negative number', () => {
+        const articleVotes = {
+            inc_votes: -15
+        };
+        return request(app)
+        .patch('/api/articles/3')
+        .send(articleVotes)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body.votes).toBe(-15)
+            expect(body).toHaveProperty("author");
+            expect(body).toHaveProperty("title");
+            expect(body).toHaveProperty("article_id");
+            expect(body).toHaveProperty("topic");
+            expect(body).toHaveProperty("created_at");
+            expect(body).toHaveProperty("votes");
+            expect(body).toHaveProperty("article_img_url");
+        });
+    });
+    test('200: identifies article id and adds to articles votes when vote count is not initially 0', () => {
+        const articleVotes = {
+            inc_votes: 27
+        };
+        return request(app)
+        .patch('/api/articles/1')
+        .send(articleVotes)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body.votes).toBe(127)
+            expect(body).toHaveProperty("author");
+            expect(body).toHaveProperty("title");
+            expect(body).toHaveProperty("article_id");
+            expect(body).toHaveProperty("topic");
+            expect(body).toHaveProperty("created_at");
+            expect(body).toHaveProperty("votes");
+            expect(body).toHaveProperty("article_img_url");
+        });
+    });
+    test('400: sends appropriate error message when passed an invalid key type', () => {
+        const badArticleVotes = {
+            inc_votes: "hello"
+        };
+        return request(app)
+        .patch('/api/articles/1')
+        .send(badArticleVotes)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request")
+        })
+    })
 });
 
 //  404 testing //
