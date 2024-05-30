@@ -1,7 +1,7 @@
 const db = require('../db/connection')
 
-exports.findTopics = () => {
-    let queryStr = "SELECT * FROM topics;"
+exports.selectUsers = () => {
+    let queryStr = `SELECT * FROM users`
     return db
     .query(queryStr)
     .then(({ rows }) => {

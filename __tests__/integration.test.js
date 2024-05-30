@@ -241,6 +241,22 @@ describe('DELETE: api/comments/:comment_id', () => {
     })
 });
 
+describe('GET: api/users', () => {
+    test('200: responds with a list of all users', () => {
+        return request(app)
+        .get('/api/users')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body).toHaveLength(4)
+            body.forEach((user) =>{
+                expect(user).toHaveProperty("username")
+                expect(user).toHaveProperty("name")
+                expect(user).toHaveProperty("avatar_url")
+            });
+        });
+    });
+});
+
 //  404 testing //
 describe('404: reponds to any unfound path', () => {
     test('404: responds with appropriate error message when path not found', () => {
