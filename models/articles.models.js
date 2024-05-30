@@ -1,4 +1,5 @@
 const db = require('../db/connection')
+const format = require('pg-format')
 
 exports.selectArticleById = (article_id) => {
     let queryStr = "SELECT * FROM articles WHERE article_id = $1;"
@@ -27,7 +28,7 @@ exports.selectArticles = () => {
 
 exports.selectArticleComments = (article_id) => {
     let queryStr = `SELECT * FROM comments WHERE article_id = $1
-                        ORDER BY created_at DESC`
+    ORDER BY created_at DESC`
     return db
     .query(queryStr, [article_id])
     .then(({ rows }) => {
@@ -35,5 +36,16 @@ exports.selectArticleComments = (article_id) => {
             return Promise.reject()
         };
         return rows;
+    });
+};
+
+exports.insertArticleComment = (article_id, newComment) => {
+    const { username , body } = newComment
+    const queryStr = `INSERT INTO comments (article_id, body, author) 
+    VALUES ($1, $2, $3) RETURNING *;`
+    return db
+    .query(queryStr, [article_id, body, username])
+    .then(({rows}) => {
+        return rows[0]
     });
 };

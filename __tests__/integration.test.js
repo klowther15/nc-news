@@ -123,6 +123,36 @@ describe('GET/api/articles/:article_id/comments', () => {
     });
 });
 
+describe('POST/api/articles/:article_id/comments', () => {
+    test('201: inserts new comment successfully and responds with posted comment', () => {
+        const newComment = {
+            username: "butter_bridge",
+            body: "comment on the article"
+        };
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(newComment)
+        .expect(201)
+        .then(({ body }) => {
+            expect(body.author).toBe("butter_bridge")
+            expect(body.body).toBe("comment on the article")
+        });
+    });
+    test('400: Sends appropriate error status and message when passed malformed object', () => {
+        const badRequest = {
+            username: "katie",
+            body: null
+        };
+        return request(app)
+        .post('/api/articles/1/comments')
+        .send(badRequest)
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Bad Request")
+        });
+    });
+});
+
 //  404 testing //
 describe('404: reponds to any unfound path', () => {
     test('404: responds with appropriate error message when path not found', () => {
@@ -144,6 +174,14 @@ describe('404: reponds to any unfound path', () => {
     test('404: responds with appropriate error message when article_id does not exist', () =>{
         return request(app)
         .get('/api/articles/99999')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Route not found')
+        });
+    });
+    test('404: responds with appropriate error message when article_id does not exist', () =>{
+        return request(app)
+        .get('/api/articles/99999/comments')
         .expect(404)
         .then(({ body }) => {
             expect(body.msg).toBe('Route not found')

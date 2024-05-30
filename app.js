@@ -4,7 +4,7 @@ app.use(express.json());
 
 const { getTopics } = require('./controllers/topics.controller');
 const { getApi } = require('./controllers/api.controllers');
-const { getArticleById , getArticles, getArticleComments} = require('./controllers/articles.controllers');
+const { getArticleById , getArticles, getArticleComments , postArticleComments} = require('./controllers/articles.controllers');
 const { psqlErrors } = require('./errors/index');
 
 
@@ -12,7 +12,9 @@ app.get('/api/topics', getTopics);
 app.get('/api', getApi);
 app.get('/api/articles/:article_id', getArticleById);
 app.get('/api/articles', getArticles);
-app.get('/api/articles/:article_id/comments', getArticleComments)
+app.get('/api/articles/:article_id/comments', getArticleComments);
+
+app.post('/api/articles/:article_id/comments', postArticleComments);
 
 
 app.use(psqlErrors);
