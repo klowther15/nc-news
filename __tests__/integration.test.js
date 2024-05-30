@@ -225,6 +225,22 @@ describe('PATCH: api/articles/:article_id', () => {
     })
 });
 
+describe('DELETE: api/comments/:comment_id', () => {
+    test('204: sends 204 status when comment is deleted', () => {
+        return request(app)
+        .delete('/api/comments/14')
+        .expect(204)
+    });
+    test('404: sends 404 status and message when comment id is invalid', () => {
+        return request(app)
+        .delete('/api/comments/8490')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Comment Not Found")
+        })
+    })
+});
+
 //  404 testing //
 describe('404: reponds to any unfound path', () => {
     test('404: responds with appropriate error message when path not found', () => {
