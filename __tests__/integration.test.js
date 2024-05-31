@@ -110,10 +110,18 @@ describe('GET/api/articles/:article_id/comments', () => {
                 expect(comment).toHaveProperty("created_at")
                 expect(comment).toHaveProperty("author")
                 expect(comment).toHaveProperty("body")
-                expect(comment).toHaveProperty("article_id") //exact id
+                expect(comment.article_id).toBe(5)
             });// add test 200 for empty array when no comments
         });
     });
+    test('200: responds with empty array when given an article number that has no comments', () => {
+        return request(app)
+        .get('/api/articles/2/comments')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body).toEqual([])
+        })
+    })
     test('400: responds with appropriate error message when given an invalid article_id', () => {
         return request(app)
         .get('/api/articles/invalidId/comments')
