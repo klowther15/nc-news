@@ -12,7 +12,7 @@ exports.getArticleById = (req, res, next) => {
 };
 
 exports.getArticles = (req, res, next) => {
-    return selectArticles()
+    return selectArticles(req.query)
     .then((articles) => {
         res.status(200).send(articles);
     })
@@ -47,7 +47,7 @@ exports.patchArticleVotes = (req, res, next) => {
     const { article_id } = req.params
     return updateArticleVotes(article_id, req.body)
     .then((updateArticleVotes) => {
-        res.status(201).send(updateArticleVotes)
+        res.status(200).send(updateArticleVotes)
     })
     .catch((err) => {
         next(err)
