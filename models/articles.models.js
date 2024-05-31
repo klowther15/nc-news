@@ -1,4 +1,6 @@
 const db = require('../db/connection')
+const { checkExists } = require('../db/seeds/utils')
+const { psqlErrors } = require('../errors/index')
 
 exports.selectArticleById = (article_id) => {
     let queryStr = "SELECT * FROM articles WHERE article_id = $1;"
@@ -40,14 +42,12 @@ exports.selectArticles = (query) => {
 exports.selectArticleComments = (article_id) => {
     let queryStr = `SELECT * FROM comments WHERE article_id = $1
     ORDER BY created_at DESC`
+    console.log('select articles model', article_id)
     return db
     .query(queryStr, [article_id])
     .then(({ rows }) => {
-        if(!rows.length){
-            return Promise.reject()
-        };
         return rows;
-    });//add error handling
+    });
 };
 
 exports.insertArticleComment = (article_id, newComment) => {

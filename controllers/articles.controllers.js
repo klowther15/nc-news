@@ -1,3 +1,4 @@
+const { checkExists } = require('../db/seeds/utils');
 const { selectArticleById , selectArticles , selectArticleComments , insertArticleComment , updateArticleVotes } = require('../models/articles.models')
 
 exports.getArticleById = (req, res, next) => {
@@ -23,8 +24,12 @@ exports.getArticles = (req, res, next) => {
 
 exports.getArticleComments = (req, res, next) => {
     const { article_id } = req.params
-    return selectArticleComments(article_id)
-    .then((comments) => {
+    const promises = [selectArticleComments(article_id),checkExists("article_id", "articles", "article_id", article_id)]
+    console.log('articles controller')
+    
+    Promise.all(promises)
+    .then((resolvedPromises) => {
+        const comments = resolvedPromises[0]
         res.status(200).send(comments)
     })
     .catch((err) => {
