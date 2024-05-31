@@ -7,7 +7,7 @@ const { getApi } = require('./controllers/api.controllers');
 const { getArticleById , getArticles, getArticleComments , postArticleComments , patchArticleVotes} = require('./controllers/articles.controllers');
 const { psqlErrors, customErrors } = require('./errors/index');
 const { deleteCommentById } = require('./controllers/comments.controllers');
-const { getUsers } = require('./controllers/users.controllers')
+const { getUsers } = require('./controllers/users.controllers');
 
 
 app.get('/api/topics', getTopics);
@@ -19,7 +19,7 @@ app.get('/api/users', getUsers);
 
 app.post('/api/articles/:article_id/comments', postArticleComments);
 
-app.patch('/api/articles/:article_id', patchArticleVotes)
+app.patch('/api/articles/:article_id', patchArticleVotes);
 
 app.delete('/api/comments/:comment_id', deleteCommentById);
 

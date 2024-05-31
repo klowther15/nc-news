@@ -72,6 +72,7 @@ describe('GET: api/articles', () => {
         .get('/api/articles')
         .expect(200)
         .then(({ body }) => {
+
             expect(body).toBeSortedBy("created_at", {
                 descending: true,
                 coerce: true,
@@ -161,7 +162,7 @@ describe('PATCH: api/articles/:article_id', () => {
         return request(app)
         .patch('/api/articles/3')
         .send(articleVotes)
-        .expect(201)
+        .expect(200)
         .then(({ body }) => {
             expect(body.votes).toBe(8)
             expect(body).toHaveProperty("author");
@@ -180,7 +181,7 @@ describe('PATCH: api/articles/:article_id', () => {
         return request(app)
         .patch('/api/articles/3')
         .send(articleVotes)
-        .expect(201)
+        .expect(200)
         .then(({ body }) => {
             expect(body.votes).toBe(-15)
             expect(body).toHaveProperty("author");
@@ -199,7 +200,7 @@ describe('PATCH: api/articles/:article_id', () => {
         return request(app)
         .patch('/api/articles/1')
         .send(articleVotes)
-        .expect(201)
+        .expect(200)
         .then(({ body }) => {
             expect(body.votes).toBe(127)
             expect(body).toHaveProperty("author");
@@ -222,7 +223,23 @@ describe('PATCH: api/articles/:article_id', () => {
         .then(({ body }) => {
             expect(body.msg).toBe("Bad Request")
         })
-    })
+    });
+    test('404: responds with appropriate error message when article_id does not exist', () =>{
+        return request(app)
+        .get('/api/articles/99999')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Article Not Found')
+        });
+    });
+    test('400: responds with appropriate error message when passed invalid article_id', () =>{
+        return request(app)
+        .get('/api/articles/invalid')
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad Request')
+        });
+    });
 });
 
 describe('DELETE: api/comments/:comment_id', () => {
@@ -231,14 +248,22 @@ describe('DELETE: api/comments/:comment_id', () => {
         .delete('/api/comments/14')
         .expect(204)
     });
-    test('404: sends 404 status and message when comment id is invalid', () => {
+    test('404: sends 404 status and message when comment id does not exist', () => {
         return request(app)
         .delete('/api/comments/8490')
         .expect(404)
         .then(({ body }) => {
             expect(body.msg).toBe("Comment Not Found")
         })
-    })
+    });
+    test('400: responds with appropriate error message when passed invalid comment_id', () =>{
+        return request(app)
+        .delete('/api/comments/invalid')
+        .expect(400)
+        .then(({ body }) => {
+            expect(body.msg).toBe('Bad Request')
+        });
+    });
 });
 
 describe('GET: api/users', () => {
@@ -255,6 +280,28 @@ describe('GET: api/users', () => {
             });
         });
     });
+});
+
+describe('GET: api/articles?topic', () => {
+    test('200: responds successfully with articles with specific topic', () => {
+        return request(app)
+        .get('/api/articles?topic=cats')
+        .expect(200)
+        .then(({ body }) => {
+            expect(body).toHaveLength(1)
+            body.forEach((article) => {
+                expect(article.topic).toBe("cats")
+            });
+        });
+    });
+    test('404: gives appropriate error when topic does not exist', () => {
+        return request(app)
+        .get('/api/articles?topic=banana')
+        .expect(404)
+        .then(({ body }) => {
+            expect(body.msg).toBe("Not Found")
+        })
+    })
 });
 
 //  404 testing //
@@ -280,7 +327,7 @@ describe('404: reponds to any unfound path', () => {
         .get('/api/articles/99999')
         .expect(404)
         .then(({ body }) => {
-            expect(body.msg).toBe('Route not found')
+            expect(body.msg).toBe('Article Not Found')
         });
     });
     test('404: responds with appropriate error message when article_id does not exist', () =>{
