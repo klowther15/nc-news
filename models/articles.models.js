@@ -28,7 +28,7 @@ exports.selectArticles = (query) => {
         queryStr += ` WHERE articles.topic = $${queryValues.length}`
     }
 
-    queryStr += ` GROUP BY articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url ORDER BY articles.created_at DESC;`
+    queryStr += ` GROUP BY articles.article_id ORDER BY articles.created_at DESC;`
 
     return db.query(queryStr, queryValues)
     .then(({ rows }) => {
@@ -42,7 +42,6 @@ exports.selectArticles = (query) => {
 exports.selectArticleComments = (article_id) => {
     let queryStr = `SELECT * FROM comments WHERE article_id = $1
     ORDER BY created_at DESC`
-    console.log('select articles model', article_id)
     return db
     .query(queryStr, [article_id])
     .then(({ rows }) => {

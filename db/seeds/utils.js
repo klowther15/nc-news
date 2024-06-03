@@ -26,7 +26,6 @@ exports.formatComments = (comments, idLookup) => {
 
 exports.checkExists = (column, table, columnName, value) => {
   const queryStr = format(`SELECT %I FROM %I WHERE %I = $1;`, column, table, columnName)
-  console.log(value, 'utils')
   return db
   .query(queryStr, [value])
   .then(({ rows }) => {

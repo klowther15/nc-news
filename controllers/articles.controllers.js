@@ -25,7 +25,6 @@ exports.getArticles = (req, res, next) => {
 exports.getArticleComments = (req, res, next) => {
     const { article_id } = req.params
     const promises = [selectArticleComments(article_id),checkExists("article_id", "articles", "article_id", article_id)]
-    console.log('articles controller')
     
     Promise.all(promises)
     .then((resolvedPromises) => {
