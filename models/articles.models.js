@@ -3,7 +3,11 @@ const { checkExists } = require('../db/seeds/utils')
 const { psqlErrors } = require('../errors/index')
 
 exports.selectArticleById = (article_id) => {
-    let queryStr = "SELECT * FROM articles WHERE article_id = $1;"
+    let queryStr = `SELECT articles.*, 
+            (SELECT COUNT(comment_id) FROM comments WHERE article_id = $1) AS comment_count
+        FROM articles
+        WHERE articles.article_id = $1;
+    `
     return db
     .query(queryStr, [article_id])
     .then(({ rows }) => {

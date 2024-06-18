@@ -54,6 +54,7 @@ describe('GET: api/articles/:article_id', () => {
             expect(body).toHaveProperty("created_at")
             expect(body).toHaveProperty("votes")
             expect(body).toHaveProperty("article_img_url")
+            expect(body).toHaveProperty("comment_count")
         });
     });
     test('400: responds with appropriate error message when given an invalid article_id', () => {
